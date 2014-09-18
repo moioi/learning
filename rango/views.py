@@ -16,10 +16,12 @@ def decode_url(str):
 
 def index(request):
 	context = RequestContext(request)
+	cat_list = get_categeory_list()
 	category_list = Category.objects.order_by('-likes')[:5]
 	page_list = Page.objects.order_by('-views')[:5]
 	context_dict = {'categories':category_list,
 		'pages':page_list,
+		'cat_list':cat_list,
 	}
 	for category in category_list:
 		category.url = encode_url(category.name)
@@ -166,6 +168,14 @@ def search(request):
 		if query:
 			result_list = run_query(query)
 	return render_to_response('rango/search.html',{'result_list':result_list},context)
+
+def get_categeory_list():
+	cat_list = Category.objects.all()
+
+	for cat in cat_list:
+		cat.url = encode_url(cat.name)
+
+	return cat_list
 
 
 
